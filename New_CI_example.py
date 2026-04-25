@@ -19,6 +19,7 @@ Outputs saved to: example/detc_dirc_<rnn_mode>/
 """
 from __future__ import annotations
 
+import os
 import sys
 import time
 from pathlib import Path
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     # Parameters (same as eCCM_CI_example.py unless noted)
     # ------------------------------------------------------------------
     RNN_MODE  = "ricker"
-    CI_MODE   = "OU"
+    CI_MODE   = "logistic"
     CI_DELAY  = 6
     RECLAG_X2Y = 1       # X->Y lag in scenario C (RecXY)
     RECLAG_Y2X = 6       # Y->X lag in scenario C (RecXY)
@@ -134,7 +135,7 @@ if __name__ == "__main__":
     N_SURR     = 50
     MAX_REF    = 500      # max reference points per DetC / DirC call
     SCORE_TYPE = "phat"   # 'pvalue' | 'phat' | 'zscore'
-    N_JOBS     = 6        # parallel pairs via joblib threading (-1 = all cores)
+    N_JOBS     = max(1, (os.cpu_count() or 4) - 2)  # parallel pairs via joblib threading
     # DirC slope test used by the detection gate / DirC label.
     #   'kendall' (default) — Kendall τ + per-fold gaussian-pvalue average
     #   'linear'            — OLS slope β + surrogate null on β̄
@@ -144,11 +145,11 @@ if __name__ == "__main__":
 
     # Ricker parameters
     R_SELF     = 3.7
-    R_COUPLE   = 0.4
+    R_COUPLE   = 0.3
 
     # Logistic parameters
     LOGISTIC_R       = 3.9
-    LOGISTIC_COUPLE  = 0.5
+    LOGISTIC_COUPLE  = 0.3
 
     PARAM_JITTER_STD = 0.05
 
